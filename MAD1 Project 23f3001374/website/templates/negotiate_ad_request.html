@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block extra_styles %}
+    <style>
+        body {
+        background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+        }
+    </style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Negotiate Ad Request</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="payment_amount">Payment Amount</label>
+            <input type="number" class="form-control" id="payment_amount" name="payment_amount" value="{{ ad_request.payment_amount }}" required>
+        </div>
+    </br>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock %}

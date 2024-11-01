@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title%}Title{% endblock %}
+{% block extra_styles %}
+    <style>
+        body {
+            background-color: white;
+        }
+        .gradient-custom-2 {
+      background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+      }
+      
+      @media (min-width: 768px) {
+      .gradient-form {
+      height: 100vh !important;
+      }
+      }
+      @media (min-width: 769px) {
+      .gradient-custom-2 {
+      border-top-right-radius: .3rem;
+      border-bottom-right-radius: .3rem;
+      }
+      }
+    </style> 
+{% endblock %}
+
+{% block content %}
+    <section class="h-100 gradient-form" style="background-color: white;">
+        <div class="container py-5 h-100">
+          <div class="row d-flex justify-content-center align-items-center h-100" >
+            <div class="col-xl-10">
+              <div class="card rounded-3 text-black" style="background-color: #555555;">
+                <div class="row g-0">
+                  <div class="col-lg-6">
+                    <div class="card-body p-md-5 mx-md-4">
+                      <h2 class="mt-1 mb-5 pb-1" style="color:gold" align="center" >Welcome to Spofluence-Genz </h2>   
+                         
+                      <form method="POST" action="{{ url_for('auth.userlogin') }}">
+                        <p style="color:white">Please login to your account</p> 
+                        <div data-mdb-input-init class="form-outline mb-4">
+                          <label class="form-label" for="role" style="color:white">Select Role</label>
+                            <select class="form-control" id="role" name="role" required>
+                                <option value="Admin">Admin</option>
+                                <option value="Influencer">Influencer</option>
+                                <option value="Sponsor">Sponsor</option>
+                            </select>   
+                        </div>
+                     
+                        <div data-mdb-input-init class="form-outline mb-4">
+                          <label class="form-label" for="username" style="color:white">Username</label>
+                          <input type="username" id="username" name="username" class="form-control"
+                            placeholder="Enter username" />                          
+                        </div>
+                              
+                        <div data-mdb-input-init class="form-outline mb-4">
+                          <label class="form-label" for="password" style="color:white" >Password</label>
+                          <input type="password" id="password" name="password" class="form-control" placeholder="Enter password"/>
+                        </div>
+      
+                        <div class="text-center pt-1 mb-5 pb-1">
+                          <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3">Login
+                          </button>
+                        </div>
+
+                        <p class="mb-0 me-2" style="color:white" align="center">Don't have an account?</p>
+                          <br>
+      
+                        <div class="d-flex align-items-center justify-content-center pb-4">
+                          <button  style="color: gold; border-color: gold;" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-danger" onclick="window.location.href='/ireg'">Register as Influencer</button>
+                          <button  style="color: gold; border-color: gold;" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-danger" onclick="window.location.href='/sreg'">Register as Sponsor</button>
+                        </div>
+      
+                      </form>
+      
+                    </div>
+                  </div>
+                  <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
+                    <div class="text-white px-3 py-4 p-md-5 mx-md-4">
+                        <div class="text-center">
+                          <img src="{{ url_for('static', filename='logo.png') }}" width=300px height=300px alt="Logo" >
+                          </div>
+                        <br />
+                      <h4 class="mb-4">We are more than just a platform!</h4>
+                      <p class="small mb-0">We give influencers the opportunity to bring new ideas and products to the public's attention. </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block extra_styles %}
+    <style>
+        body {
+        background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+        }
+    </style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Create Ad Request</h2>
+    <form method="POST">
+        {% if user.role=='Sponsor' %}
+        <div class="form-group">
+            <label for="campaign_id">Campaign</label>
+            <select class="form-control" id="campaign_id" name="campaign_id" required>
+                {% for campaign in campaigns %}
+                <option value="{{ campaign.id }}">{{ campaign.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="influencer_id">Influencer</label>
+            <select class="form-control" id="influencer_id" name="influencer_id" required>
+                {% for influencer in all_influencers %}
+                <option value="{{ influencer.id }}">{{ influencer.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="sponsor_id">Sponsor</label>
+            <select class="form-control" id="sponsor_id" name="sponsor_id" required>
+                {% for sponsor in c_sponsor %}
+                <option value="{{ sponsor.id }}">{{ sponsor.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="requirements">Requirements</label>
+            <textarea class="form-control" id="requirements" name="requirements"></textarea>
+        </div>
+        {% endif %}
+        {% if user.role=='Influencer' %}
+        <div class="form-group">
+            <label for="campaign_id">Campaign</label>
+            <select class="form-control" id="campaign_id" name="campaign_id" required>
+                {% for campaign in campaigns_influencer %}
+                <option value="{{ campaign.id }}">{{ campaign.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="influencer_id">Influencer</label>
+            <select class="form-control" id="influencer_id" name="influencer_id" required>
+                {% for influencer in c_influencer %}
+                <option value="{{ influencer.id }}">{{ influencer.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="sponsor_id">Sponsor</label>
+            <select class="form-control" id="sponsor_id" name="sponsor_id" required>
+                {% for sponsor in all_sponsors %}
+                <option value="{{ sponsor.id }}">{{ sponsor.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="requirements">Why can I do an ad for the product?</label>
+            <textarea class="form-control" id="requirements" name="requirements"></textarea>
+        </div>
+        {% endif %}
+        <div class="form-group">
+            <label for="payment_amount">Payment Amount</label>
+            <input type="number" class="form-control" id="payment_amount" name="payment_amount" required>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+</div>
+{% endblock %}

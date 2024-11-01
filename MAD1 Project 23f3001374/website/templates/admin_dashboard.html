@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: lavenderblush;
+        }
+    </style>
+</head>
+<body>
+{% block admin %}
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbar">
+      <div class="navbar-nav">
+          <a class="nav-item nav-link" id="admin_dashboard" href="/admin_dashboard">Admin Dashboard</a>
+          <a class="nav-item nav-link" id="view_influencer_profiles" href="{{ url_for('views.view_influencer_profiles') }}">View Influencers Profiles</a>
+          <a class="nav-item nav-link" id="view_sponsor_profiles" href="{{ url_for('views.view_sponsor_profiles') }}">View Sponsors Profiles</a>
+          <a class="nav-item nav-link" id="view_campaigns_admin" href="{{ url_for('views.view_campaigns_admin') }}">View Campaigns</a>
+          <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
+      </div>
+    </div>
+  </nav>         
+{% endblock %}
+{% block content %}
+<h2 align="center">Admin Dashboard</h2>
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card card-style mb-2 px-3">
+            <div class="card-title"><h4 align="center">User Statistics</h4></div>
+            <div class="card-body">
+                <div class="chart-container" style="position: relative;">
+                    <canvas id="userStatsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mx-auto">
+        <div class="card card-style mb-2 px-3">
+            <div class="card-title"><h4 align="center">AdRequest Statistics</h4></div>
+            <div class="card-body">
+                <div class="chart-container" style="position: relative;">
+                    <canvas id="adrequeststats" width="300" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {% if flagged_sponsors or flagged_influencers %}
+    <div class="col-md-4 mx-auto">
+        <div class="card card-style mb-2 px-3">
+            <div class="card-title"><h4 align="center">Flagged Users</h4></div>
+            <div class="card-body">
+                <div class="chart-container" style="position: relative;">
+                    <canvas id="flaggedUsersChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="col-md-4 mx-auto">
+        <div class="card card-style mb-2 px-3">
+            <div class="card-title"><h4 align="center">Campaign Visibility</h4></div>
+            <div class="card-body">
+                <div class="chart-container" style="position: relative;">
+                    <canvas id="campaignvisibility"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card card-style mb-2 px-3">
+            <div class="card-title"><h4 align="center">Influencer Niches</h4></div>
+            <div class="card-body">
+                <div class="chart-container" style="position: relative;">
+                    <canvas id="influniche"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mx-auto">
+        <div class="card card-style mb-2 px-3">
+            <div class="card-title"><h4 align="center">Campaign Niches</h4></div>
+            <div class="card-body">
+                <div class="chart-container" style="position: relative;">
+                    <canvas id="campaignniche"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const userStatsCtx = document.getElementById('userStatsChart')?.getContext('2d');
+        const adrequeststatsCtx = document.getElementById('adrequeststats')?.getContext('2d');
+        {% if flagged_sponsors or flagged_influencers %}
+        const flaggedUsersCtx = document.getElementById('flaggedUsersChart')?.getContext('2d');
+        {% endif %}
+        const campaignvisibility = document.getElementById('campaignvisibility')?.getContext('2d');
+        const influnicheCtx = document.getElementById('influniche')?.getContext('2d');
+        const campaignnicheCtx = document.getElementById('campaignniche')?.getContext('2d');
+        
+        if (userStatsCtx) {
+            new Chart(userStatsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Active Users', 'Total Sponsors', 'Total Influencers', 'Total Campaigns', 'Total Ad Requests'],
+                    datasets: [{
+                        label: 'Counts',
+                        data: [{{ active_users }}, {{ sponsors }}, {{ influencers }}, {{ total_campaigns }}, {{ total_ad_requests }}],
+                        backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(80, 200, 250, 0.2)', 'rgba(90, 100, 175, 0.2)', 'rgba(255, 206, 86, 0.2)'],
+                        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(54, 162, 235, 1)', 'rgba(80, 200, 250, 1)', 'rgba(90, 100, 175, 1)', 'rgba(255, 206, 86, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        {% if flagged_sponsors or flagged_influencers %}
+        if (flaggedUsersCtx) {
+            new Chart(flaggedUsersCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Flagged Sponsors', 'Flagged Influencers'],
+                    datasets: [{
+                        label: 'Flagged Users',
+                        data: [{{ flagged_sponsors }}, {{ flagged_influencers }}],
+                        backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(255, 159, 64, 0.2)'],
+                        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(255, 159, 64, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        }
+        {% endif %}
+
+        if (campaignvisibility) {
+            new Chart(campaignvisibility, {
+                type: 'pie',
+                data: {
+                    labels: ['Public Campaigns', 'Private Campaigns'],
+                    datasets: [{
+                        label: 'Campaign Visibility',
+                        data: [{{ public_campaigns }}, {{ private_campaigns }}],
+                        backgroundColor: ['rgba(70, 100, 70 , 0.2)', 'rgba(200, 110, 95, 0.2)'],
+                        borderColor: ['rgba(70, 100, 70, 1)', 'rgba(200, 110, 95, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        }
+
+        if (adrequeststatsCtx) {
+            new Chart(adrequeststatsCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Accepted AdRequests', 'Pending AdRequests', 'Completed AdRequests', 'Negotiating AdRequests', 'Rejected AdRequests'],
+                    datasets: [{
+                        label: 'AdRequests Statistics',
+                        data: [{{ accepted_adrequests }}, {{ pending_adrequests }}, {{ completed_adrequests }}, {{ negotiating_adrequests }}, {{ rejected_adrequests}}],
+                        backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(255, 159, 64, 0.2)', 'rgba(80, 200, 250, 0.2)', 'rgba(90, 100, 175, 0.2)', 'rgba(100, 206, 86, 0.2)'],
+                        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(255, 159, 64, 1)', 'rgba(80, 200, 250, 1)', 'rgba(90, 100, 175, 1)', 'rgba(100, 206, 86, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        }
+
+        if (influnicheCtx) {
+            new Chart(influnicheCtx, {
+                type: 'bar',
+                data: {
+                    labels: {{ iniches | tojson }},
+                    datasets: [{
+                        label: 'Number of Influencers',
+                        data: {{ incounts | tojson }},
+                        backgroundColor: 'rgba(90, 100, 175, 0.2)',
+                        borderColor: 'rgba(90, 100, 175, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        if (campaignnicheCtx) {
+            new Chart(campaignnicheCtx, {
+                type: 'bar',
+                data: {
+                    labels: {{ cniches | tojson }},
+                    datasets: [{
+                        label: 'Number of Campaigns',
+                        data: {{ cncounts | tojson }},
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block extra_styles %}
+<style>
+    body {
+        background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+    }
+    .profile {
+        width: 200px;
+        height: 100vh;
+        position: fixed;
+        top: 5; 
+        left: 0;
+        padding: 5px;
+        box-sizing: border-box;
+        color: azure;
+        overflow: auto;
+        overflow-x: hidden;
+    }
+    .rectangle2 {
+        width: calc(100% - 250px); 
+        height: 100vh;
+        position: relative;
+        top: 5px; 
+        margin-left: 250px;
+        padding: 5px;
+        box-sizing: border-box;
+        color: azure;
+        overflow: auto;
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% if user.flagged == False %}
+<div align="center" style="color: white;"><h1>Welcome {{ user.username }}!</h1></div>
+<div class="profile" align="center">
+        <h3>Profile</h3>
+        {% if user.role=='Influencer' %}
+        <img src="{{ url_for('views.profile_pic', filename=user.profile_pic) }}" width=150px, height=150px, alt="Profile Picture">
+        <h5>Username: {{ user.username }}</h5>
+        <h5>Niche: {{ user.niche }}</h5>
+        <h5>Earnings: {{ user.earnings }}</h5>
+        <h5>Ratings: {{ user.ratings }}</h5>
+        <h5>Reach: {{ user.min_reach }}</h5>
+        {% endif %}
+        <a href="{{ url_for('auth.edit_profile') }}" <button type="button" class="btn btn-success">Edit Profile</button></a>
+</div>
+
+<br>
+<h2 style="color:darkblue;" align="center">Ad Requests 
+    <a href="{{ url_for('ad_request.view_ad_requests') }}" class="btn btn-primary">View Ad requests</a>
+</h2>
+
+<div class="rectangle2">
+    <div class="col-md-20">
+        <h3 style="color:bisque;" align="left">Received Ad Requests</h3>
+        <div class="row">
+            {% if received_ad_requests %}
+            {% for ad_request in received_ad_requests %}
+            {% if ad_request.status=='Pending' or ad_request.status=='Negotiating' %}
+            <div class="col-md-3">
+                <div class="card" style="width: 18rem; margin-bottom: 10px; background-color:lavenderblush">
+                    <div class="card-body">
+                        <h5 class="card-title" style="color: black;">{{ ad_request.campaign.name }}</h5>
+                        <p class="card-text" style="color: black;">
+                            Sponsor: {{ ad_request.sponsor.username }}</br>
+                            Original Payment Amount: {{ ad_request.payment_amount }}</br>
+                            Requirements: {{ ad_request.requirements }}
+                            {% if ad_request.status == 'Pending' %}
+                            <form action="{{ url_for('ad_request.accept_ad_request', ad_request_id=ad_request.id) }}" method="POST" style="display: inline;">
+                                <button type="submit" class="btn btn-success">Accept</button>
+                            </form>
+                            <form action="{{ url_for('ad_request.reject_ad_request', ad_request_id=ad_request.id) }}" method="POST" style="display: inline;">
+                                <button type="submit" class="btn btn-danger">Reject</button>
+                            </form>
+                            <a href="{{ url_for('ad_request.negotiate_ad_request', ad_request_id=ad_request.id) }}" class="btn btn-warning">Negotiate</a>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% else %}
+            <h5 style="color:black;">No received ad requests found</h5>
+            {% endif %}
+        </div>
+    </div>
+    <br>
+    
+    <div class="col-md-20">
+        <h3 style="color:bisque;" align="left">Sent Ad Requests
+            <a href="{{ url_for('ad_request.create_ad_request') }}" class="btn btn-primary">+Create New Ad request</a>
+        </h3>
+        <div class="row">
+            {% if sent_ad_requests %}
+            <div class="row">
+                {% for ad_request in sent_ad_requests %}
+                {% if ad_request.status=='Pending' or ad_request.status=='Negotiating' %}
+                <div class="col-md-4 mb-4">
+                    <div class="card" style="width: 100%;">
+                        <div class="card-body" style="background-color:lavenderblush">
+                            <h5 class="card-title" style="color: black;">{{ ad_request.campaign.name }}</h5>
+                            <div class="card-text" style="color: black;">
+                                Sponsor: {{ ad_request.sponsor.username }}</br>
+                                Requirements: {{ ad_request.requirements }}</br>
+                                Status: {{ ad_request.status }}</br>
+                                Payment Amount: {{ ad_request.payment_amount }}</br>
+                                {% if ad_request.negotiated_payment %}
+                                Negotiated Payment: {{ ad_request.negotiated_payment }}
+                                {% if ad_request.status == 'Negotiating' %}
+                                <form action="{{ url_for('ad_request.accept_ad_request', ad_request_id=ad_request.id) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-success">Accept</button>
+                                </form>
+                                <form action="{{ url_for('ad_request.reject_ad_request', ad_request_id=ad_request.id) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger">Reject</button>
+                                </form>
+                                {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% else %}
+            <h5 style="color:black;" align="left">No sent ad requests found</h5>
+            {% endif %}
+        </div>
+    </div>
+    <br>
+
+    <div class="container">
+        <div class="row">
+        <div class="col-md-12">
+        <h3 style="color:bisque;" align="center">Active Ads </h3>
+        {% if ad_requests %}
+        <div class="row">
+            {% for ad_request in ad_requests %}
+            {% if ad_request.status=='Accepted' or ad_request.status=='Completed' %}
+            <div class="col-md-4 mb-4">
+                <div class="card" style="width:100%;">
+                    <div class="card-body" style="background-color:lavenderblush">
+                        <h5 class="card-title" style="color:black">{{ ad_request.campaign.name }}</h5>
+                        <p class="card-text" style="color:black">Sponsor: {{ ad_request.sponsor.username }}<br>
+                            Status: {{ ad_request.status }}<br>
+                            Payment amount: {{ ad_request.payment_amount }}<br>
+                        {% if ad_request.negotiated_payment %}
+                        Negotiated Payment: {{ ad_request.negotiated_payment }}<br>
+                        {% endif %}
+                        {% if ad_request.status == 'Completed' %}
+                        Rating: {{ ad_request.sponsor_rating }}<br>
+                        {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <h5 align="center" style="color:black">No active Ads found</h5>
+        {% endif %}
+        </div>
+        </div>
+    </div>  
+
+</div>
+{% else %}
+<h3>You have been flagged by the admin</h3>
+{% endif %}
+{% endblock %}

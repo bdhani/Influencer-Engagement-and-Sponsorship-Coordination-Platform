@@ -1,0 +1,36 @@
+{% extends "admin_dashboard.html" %}
+{% block content %}
+<div class="container">
+    <h2>View Campaigns</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Campaign ID</th>
+                <th>Name</th>
+                <th>Sponsor ID</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Budget</th>
+                <th>Niche</th>
+                <th>Visibility</th>
+                <th>Goals</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for campaign in campaigns %}
+            <tr>
+                <td>{{ campaign.id }}</td>
+                <td>{{ campaign.name }}</td>
+                <td>{{ campaign.sponsor_id }}</td>
+                <td>{{ campaign.start_date }}</td>
+                <td>{{ campaign.end_date }}</td>
+                <td>{{ campaign.budget }}</td>
+                <td>{{ campaign.niche }}</td>
+                <td>{{ campaign.visibility }}</td>
+                <td>{{ campaign.goals }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

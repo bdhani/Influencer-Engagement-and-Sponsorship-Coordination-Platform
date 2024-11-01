@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block extra_styles %}
+    <style>
+        body {
+        background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+        }
+    </style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Update Ad Request</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="campaign_name">Campaign Name</label>
+            <input type="text" class="form-control" id="campaign_name" name="campaign_name" value="{{ ad_request.campaign.name }}" required readonly>
+        </div>
+        <div class="form-group">
+            <label for="influencer_id">Influencer Id</label>
+            <input type="text" class="form-control" id="influencer_id" name="influencer_id" value="{{ ad_request.influencer.username }}" required readonly>
+        </div>
+        <div class="form-group">
+            <label for="requirements">Requirements</label>
+            <textarea class="form-control" id="requirements" name="requirements" required>{{ ad_request.requirements }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="payment_amount">Payment Amount</label>
+            <input type="number" class="form-control" id="payment_amount" name="payment_amount" value="{{ ad_request.payment_amount }}" required>
+        </div>
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select class="form-control" id="status" name="status" required>
+                <option value="Pending" {% if ad_request.status == 'Pending' %}selected{% endif %}>Pending</option>
+                <option value="Accepted" {% if ad_request.status == 'Accepted' %}selected{% endif %}>Accepted</option>
+                <option value="Rejected" {% if ad_request.status == 'Rejected' %}selected{% endif %}>Rejected</option>
+            </select>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+</div>
+{% endblock %}

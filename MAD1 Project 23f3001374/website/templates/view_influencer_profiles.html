@@ -1,0 +1,15 @@
+{% extends "admin_dashboard.html" %}
+{% block content %}
+<h3>Influencers</h3>
+<ul>
+    {% for influencer in influencers %}
+    <li>
+        {{ influencer.username }} - {{ influencer.niche }}
+        <a href="{{ url_for('views.view_full_profile', user_id=influencer.id) }}" class="btn btn-primary">View full Profile</a>
+        <form action="{{ url_for('auth.flag_user', user_id=influencer.id) }}" method="POST" style="display:inline;">
+            <button type="submit" class="btn btn-warning">Flag User</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block extra_styles %}
+    <style>
+        body {
+            background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+        }
+    </style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 style="color: darkblue;">View Ad Requests</h2>
+    <br>
+    <h3 style="color: bisque;">Sent Ad Requests</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Campaign</th>
+                <th>Influencer/Sponsor</th>
+                <th>Requirements</th>
+                <th>Payment Amount</th>
+                <th>Negotiated Payment</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ad_request in sent_ad_requests %}
+            <tr>
+                <td>{{ ad_request.campaign.name }}</td>
+                <td>{{ ad_request.influencer.username if user.role == 'Sponsor' else ad_request.sponsor.username }}</td>
+                <td>{{ ad_request.requirements }}</td>
+                <td>{{ ad_request.payment_amount }}</td>
+                <td>{{ ad_request.negotiated_payment }}</td>
+                <td>{{ ad_request.status }}</td>
+                <td>
+                        {% if ad_request.status == 'Negotiating' %}
+                            <p>New Payment Proposal: {{ ad_request.negotiated_payment }}</p>
+                            <form action="{{ url_for('ad_request.accept_ad_request', ad_request_id=ad_request.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-success">Accept</button>
+                            </form>
+                            <form action="{{ url_for('ad_request.reject_ad_request', ad_request_id=ad_request.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger">Reject</button>
+                            </form>
+                        {% elif ad_request.status == 'Pending' %}
+                            <a href="{{ url_for('ad_request.update_ad_request', ad_request_id=ad_request.id) }}" class="btn btn-warning">Edit</a>
+                            <form action="{{ url_for('ad_request.delete_ad_request', ad_request_id=ad_request.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        {% else %}
+                            <form action="{{ url_for('ad_request.delete_ad_request', ad_request_id=ad_request.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    
+    <h3 style="color: bisque;">Received Ad Requests</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Campaign</th>
+                <th>Influencer/Sponsor</th>
+                <th>Requirements/Message</th>
+                <th>Payment Amount</th>
+                <th>Negotiated Payment</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ad_request in received_ad_requests %}
+            <tr>
+                <td>{{ ad_request.campaign.name }}</td>
+                <td>{{ ad_request.influencer.username if user.role == 'Sponsor' else ad_request.sponsor.username }}</td>
+                <td>{{ ad_request.requirements }}</td>
+                <td>{{ ad_request.payment_amount }}</td>
+                <td>{{ ad_request.negotiated_payment }}</td>
+                <td>{{ ad_request.status }}</td>
+                <td>
+                        {% if ad_request.status == 'Pending' %}
+                            <form action="{{ url_for('ad_request.accept_ad_request', ad_request_id=ad_request.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-success">Accept</button>
+                            </form>
+                            <form action="{{ url_for('ad_request.reject_ad_request', ad_request_id=ad_request.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger">Reject</button>
+                            </form>
+                            <a href="{{ url_for('ad_request.negotiate_ad_request', ad_request_id=ad_request.id) }}" class="btn btn-warning">Negotiate</a>
+                        {% else %}
+                            <form action="{{ url_for('ad_request.delete_ad_request', ad_request_id=ad_request.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

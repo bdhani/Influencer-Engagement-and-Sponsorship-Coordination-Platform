@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block extra_styles %}
+    <style>
+        body {
+        background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+        }
+    </style>
+{% endblock %}
+{% block content %}
+<div class="container" style="color: white;">
+    <h2>Search Results</h2>
+    <ul>
+        {% if users %}
+        {% for user in users %}
+        <li>{{ user.username }} - {{ user.min_reach }} followers - 
+            <a href="{{ url_for('views.view_full_profile', user_id=user.id) }}" class="btn btn-primary">View full Profile</a>
+            {% if current_user.role == 'Sponsor' %}
+            <a href="{{ url_for('ad_request.create_ad_request') }}" class="btn btn-primary">Create New Ad Request</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+        {% elif campaigns %}
+        {% for campaign in campaigns %}
+        {% if campaign.visibility == 'Public' %}
+        <li>{{ campaign.name }} - {{ campaign.sponsor.username }} - {{ campaign.niche }} - {{ campaign.budget }} - Start Date: {{ campaign.start_date }}, End Date: {{ campaign.end_date }}
+            <a href="{{ url_for('ad_request.create_ad_request') }}" class="btn btn-primary">Create New Ad Request</a>
+            <br>
+        </li>
+        {% endif %}
+        {% endfor %}
+        {% else %}
+        No results found
+        {% endif %}
+    </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block extra_styles %}
+    <style>
+        body {
+        background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+        }
+    </style>
+{% endblock %}
+{% block content %}
+{% if user.role =='Influencer' %}
+<form method="POST" enctype=multipart/form-data>
+    <p style="color:white">Please fill your details</p> 
+
+    <div data-mdb-input-init class="form-outline mb-4">
+      <label class="form-label" for="username" style="color:white">Username</label>
+      <input type="text" id="username" name="username" value="{{ user.username }}" class="form-control"
+        placeholder="Enter username" required readonly/>                          
+    </div>
+     
+  <div data-mdb-input-init class="form-outline mb-4">
+    <label class="form-label" for="profile_pic" style="color:white">Profile Picture</label>
+    <input type="file" id="profile_pic" name="profile_pic" class="form-control"/>
+  </div>
+
+  <div data-mdb-input-init class="form-outline mb-4">
+    <label class="form-label" for="reach_yt" style="color:white" >YouTube Reach</label>
+    <input type="number" id="reach_yt" name="reach_yt" value="{{ user.reach_yt }}" class="form-control" placeholder="Enter YouTube Reach / Followers" required/>
+  </div>
+  <div data-mdb-input-init class="form-outline mb-4">
+    <label class="form-label" for="reach_tw" style="color:white" >Twitter Reach</label>
+    <input type="number" id="reach_tw" name="reach_tw" value="{{ user.reach_tw }}" class="form-control" placeholder="Enter Twitter Reach / Followers" required/>
+  </div>
+  <div data-mdb-input-init class="form-outline mb-4">
+    <label class="form-label" for="reach_meta" style="color:white" >Meta (Facebook) Reach</label>
+    <input type="number" id="reach_meta" name="reach_meta" value="{{ user.reach_meta }}" class="form-control" placeholder="Enter Meta (Facebook) Reach / Followers" required/>
+  </div>
+  <div data-mdb-input-init class="form-outline mb-4">
+    <label class="form-label" for="reach_insta" style="color:white" >Instagram Reach</label>
+    <input type="number" id="reach_insta" name="reach_insta" value="{{ user.reach_insta }}" class="form-control" placeholder="Enter Instagram Reach / Followers" required/>
+  </div>
+
+  <div class="text-center pt-1 mb-5 pb-1">
+    <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="submit">Submit</button>
+  </div>
+
+{% endif %}
+{% endblock %}
+
+

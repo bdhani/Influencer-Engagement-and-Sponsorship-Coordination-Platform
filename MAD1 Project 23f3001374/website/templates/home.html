@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title%}Home{% endblock %}
+{% block extra_styles %}
+    <style>
+        body {
+        background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+        }
+    </style>
+{% endblock %}
+{% block content %}
+<div><h1 align="center">Welcome to Influencer Engagement & Sponsorship Coordination Platform!!!</h1></div>
+<div align="center"><h3>Please login or register to see your dashboards and coordinate with more sponsors and influencers</h3></div>
+<div align="center"><img src="{{ url_for('static', filename='logo.png') }}" width=500px, height=300px, alt="Logo" ></div>
+{% endblock %}
